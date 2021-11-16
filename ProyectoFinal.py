@@ -61,7 +61,7 @@ class TuringMachine(object):
                 self.Head -= 1
 
     def start(self):
-        theTable = PrettyTable(["Paso", "Config"])
+        # theTable = PrettyTable(["Paso", "Config"])
         cont = 0
         with open('result.txt', 'w') as output_file:
             while True:
@@ -73,10 +73,10 @@ class TuringMachine(object):
                     if (self.Head == len(self.thisTape) \
                         and (i + 1) == len(self.thisTape)):
                         currSetting += self.currentState
-                print(currSetting)
-                theTable.add_row([cont, currSetting])
+                print(cont, "   ", currSetting)
+                # theTable.add_row([cont, currSetting])
                 output_file.write(currSetting + "\n")
-                if self.isFinalnextStep: return print(theTable)
+                if self.isFinalnextStep: return print("cantidad de pasos: ", cont-1)
                 self.nextStep()
                 cont += 1
 
@@ -89,16 +89,16 @@ while flag:
     print("---------- Maquina de Turing ----------")
     option = input("1. Ejemplo aleatorio \n2. Ejemplo de aceptacion \n3. Ejemplo de Rechazo \n4. Ejemplo Infinito \n5. Salir \n")
     if (option == '1'):
-        turing = TuringMachine("JSONs/ejemplo.json")
+        turing = TuringMachine("JSON/ejemplo.json")
         turing.start()
     elif (option == '2'):
-        turing = TuringMachine("JSONs/aceptacion.json")
+        turing = TuringMachine("JSON/aceptacion.json")
         turing.start()
     elif (option == '3'):
-        turing = TuringMachine("JSONs/rechazo.json")
+        turing = TuringMachine("JSON/rechazo.json")
         turing.start()
     elif (option == '4'):
-        turing = TuringMachine("JSONs/infinito.json")
+        turing = TuringMachine("JSON/infinito.json")
         turing.start()
     elif (option == '5'):
         flag = False
