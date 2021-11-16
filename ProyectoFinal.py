@@ -48,29 +48,29 @@ class TuringMachine(object):
         self.theTape = Tape(configutations["tape"])
 
     def nextStep(self):
-        thisBit = self.theTape[self.head_position]
+        thisBit = self.theTape[self.Head]
         transIndex = "{},{}".format(self.currentState, thisBit)
         if transIndex in self.transFunc \
             and self.currentState in self.States:            
             transition = self.transFunc[transIndex]
             self.currentState = transition["state"]
-            self.theTape[self.head_position] = transition["value"]
+            self.theTape[self.Head] = transition["value"]
             if transition["direc"] == "R":
-                self.head_position += 1
+                self.Head += 1
             elif transition["direc"] == "L":
-                self.head_position -= 1
+                self.Head -= 1
 
     def start(self):
-        theTable = PrettyTable(["Id", "Configuracion"])
+        theTable = PrettyTable(["Paso", "Config"])
         cont = 0
         with open('result.txt', 'w') as output_file:
             while True:
                 currSetting = ""
                 for i in range(len(self.thisTape)):
-                    if (self.head_position == i):
+                    if (self.Head == i):
                         currSetting += self.currentState
                     currSetting += self.thisTape[i]
-                    if (self.head_position == len(self.thisTape) \
+                    if (self.Head == len(self.thisTape) \
                         and (i + 1) == len(self.thisTape)):
                         currSetting += self.currentState
                 print(currSetting)
@@ -87,7 +87,7 @@ class TuringMachine(object):
 flag = True
 while flag:
     print("---------- Maquina de Turing ----------")
-    option = input("1. Ejemplo aleatorio \n2. Ejemplo de aceptacion \n3. Ejemplo de Rechazo \n4. Ejemplo Infinito")
+    option = input("1. Ejemplo aleatorio \n2. Ejemplo de aceptacion \n3. Ejemplo de Rechazo \n4. Ejemplo Infinito \n5. Salir \n")
     if (option == '1'):
         turing = TuringMachine("JSONs/ejemplo.json")
         turing.start()
@@ -100,6 +100,8 @@ while flag:
     elif (option == '4'):
         turing = TuringMachine("JSONs/infinito.json")
         turing.start()
+    elif (option == '5'):
+        flag = False
     else:
         print("la opcion no es valida, intente de nuevo \n")
 
