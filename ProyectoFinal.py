@@ -31,6 +31,14 @@ class TuringMachine(object):
         self.Head = 0
         self.loadTape(filename)
 
+    @property
+    def thisTape(self):
+        return str(self.theTape)
+
+    @property
+    def isFinalnextStep(self):
+        return self.currentState in self.final_states
+
     def loadTape(self, filename):
         configutations = self.parseJSON(filename)
         self.States = configutations["q"]
@@ -39,15 +47,7 @@ class TuringMachine(object):
         self.final_states = configutations["final_states"]
         self.theTape = Tape(configutations["tape"])
 
-    @property
-    def actual_tape(self):
-        return str(self.theTape)
-
-    @property
-    def is_final(self):
-        return self.currentState in self.final_states
-
-    def step(self):
+    def nextStep(self):
         thisBit = self.theTape[self.head_position]
         transIndex = "{},{}".format(self.currentState, thisBit)
         if transIndex in self.transFunc \
@@ -60,24 +60,24 @@ class TuringMachine(object):
             elif transition["direc"] == "L":
                 self.head_position -= 1
 
-    def run(self):
+    def start(self):
         theTable = PrettyTable(["Id", "Configuracion"])
         cont = 0
         with open('result.txt', 'w') as output_file:
             while True:
                 currSetting = ""
-                for i in range(len(self.actual_tape)):
+                for i in range(len(self.thisTape)):
                     if (self.head_position == i):
                         currSetting += self.currentState
-                    currSetting += self.actual_tape[i]
-                    if (self.head_position == len(self.actual_tape) \
-                        and (i + 1) == len(self.actual_tape)):
+                    currSetting += self.thisTape[i]
+                    if (self.head_position == len(self.thisTape) \
+                        and (i + 1) == len(self.thisTape)):
                         currSetting += self.currentState
                 print(currSetting)
                 theTable.add_row([cont, currSetting])
                 output_file.write(currSetting + "\n")
-                if self.is_final: return print(theTable)
-                self.step()
+                if self.isFinalnextStep: return print(theTable)
+                self.nextStep()
                 cont += 1
 
     def parseJSON(self, filename):
@@ -90,16 +90,16 @@ while flag:
     option = input("1. Ejemplo aleatorio \n2. Ejemplo de aceptacion \n3. Ejemplo de Rechazo \n4. Ejemplo Infinito")
     if (option == '1'):
         turing = TuringMachine("JSONs/ejemplo.json")
-        turing.run()
+        turing.start()
     elif (option == '2'):
         turing = TuringMachine("JSONs/aceptacion.json")
-        turing.run()
+        turing.start()
     elif (option == '3'):
         turing = TuringMachine("JSONs/rechazo.json")
-        turing.run()
+        turing.start()
     elif (option == '4'):
         turing = TuringMachine("JSONs/infinito.json")
-        turing.run()
+        turing.start()
     else:
         print("la opcion no es valida, intente de nuevo \n")
 
